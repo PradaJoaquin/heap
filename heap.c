@@ -3,6 +3,9 @@
 #include "heap.h"
 #define SIZE_MINIMO 8
 #define FACTOR_REDIMENSION 2
+
+typedef int (*cmp_func_t) (const void *a, const void *b);
+
 typedef struct heap{
     vector_t* arreglo;
     cmp_func_t comparar;
@@ -69,7 +72,6 @@ void *heap_desencolar(heap_t *heap){
     return dato;
 }
 
-
 void upheap(heap_t* heap, size_t padre, size_t hijo){
     if(hijo == 0){
         return;
@@ -96,4 +98,8 @@ void downheap(heap_t* heap, size_t padre, size_t hijo_izq, size_t hijo_der){
     size_t nuevo_hijo_izq = maximo * 2 + 1;
     size_t nuevo_hijo_der = maximo * 2 + 2;
     downheap(heap, maximo, nuevo_hijo_izq, nuevo_hijo_der);
+}
+
+void heap_sort(void *elementos[], size_t cant, cmp_func_t cmp){
+    
 }
