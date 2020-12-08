@@ -4,6 +4,10 @@
 #define SIZE_MINIMO 8
 #define FACTOR_REDIMENSION 2
 
+#define TOPE 0
+#define TOPE_HIJO_IZQ 1
+#define TOPE_HIJO_DER 2
+
 typedef int (*cmp_func_t) (const void *a, const void *b);
 
 typedef struct heap{
@@ -24,6 +28,13 @@ heap_t *heap_crear(cmp_func_t cmp){
     heap->comparar = cmp;
 }
 
+void heapify(heap_t* heap){
+    size_t mitad = vector_cantidad(heap->arreglo);
+    for(int i = mitad; mitad > -1; mitad--){
+        downheap(heap, i, 2 * i + 1, 2 * i + 2);
+    }
+}
+
 heap_t *heap_crear_arr(void *arreglo[], size_t n, cmp_func_t cmp){
     heap_t* heap = malloc(sizeof(heap_t));
     if(!heap){
@@ -35,6 +46,7 @@ heap_t *heap_crear_arr(void *arreglo[], size_t n, cmp_func_t cmp){
         return NULL;
     }
     heap->comparar = cmp;
+    heapify(heap);
     return heap;
 }
 
@@ -68,7 +80,7 @@ void *heap_ver_max(const heap_t *heap){
 void *heap_desencolar(heap_t *heap){
     vector_swap(heap,0, vector_cantidad(heap->arreglo));
     void* dato = vector_eliminar(heap->arreglo);
-    downheap(heap, 0, 1, 2);
+    downheap(heap, TOPE, TOPE_HIJO_IZQ, TOPE_HIJO_DER);
     return dato;
 }
 
@@ -101,5 +113,12 @@ void downheap(heap_t* heap, size_t padre, size_t hijo_izq, size_t hijo_der){
 }
 
 void heap_sort(void *elementos[], size_t cant, cmp_func_t cmp){
-    
+    heap_t* heap = heap_crear_arr(elementos, cant, cmp);
+    size_t ultimo_relativo = cant - 1;
+    while(ultimo_relativo > 0){
+        vector_swap(heap->arreglo, 0, ultimo_relativo);
+        elementos[ultimo_relativo] = vector_eliminar(heap->arreglo);
+        ultimo_relativo--;
+        downheap(heap, TOPE, TOPE_HIJO_IZQ, TOPE_HIJO_DER);
+    }
 }

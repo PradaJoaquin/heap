@@ -16,8 +16,9 @@ typedef struct vector vector_t;
  ******************************************************************/
 
 
-vector_t *vector_crear();
+vector_t *vector_crear(void** datos, size_t cantidad);
 
+vector_t* vector_crear_vacio();
 
 void vector_destruir(vector_t* vector, void (*destruir_elemento)(void *e));
 
