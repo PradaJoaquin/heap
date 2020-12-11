@@ -3,6 +3,16 @@
 #include "heap.h"
 #define SIZE_MINIMO 8
 #define FACTOR_REDIMENSION 2
+
+#define TOPE 0
+#define TOPE_HIJO_IZQ 1
+#define TOPE_HIJO_DER 2
+
+typedef int (*cmp_func_t) (const void *a, const void *b);
+
+void downheap(heap_t* heap, size_t padre, size_t hijo_izq, size_t hijo_der);
+void upheap(heap_t* heap, size_t padre, size_t hijo);
+
 typedef struct heap{
     vector_t* arreglo;
     cmp_func_t comparar;
@@ -19,6 +29,14 @@ heap_t *heap_crear(cmp_func_t cmp){
         return NULL;
     }
     heap->comparar = cmp;
+    return heap;
+}
+
+void heapify(heap_t* heap){
+    size_t mitad = vector_cantidad(heap->arreglo);
+    for(size_t i = mitad; mitad > 0; mitad--){
+        downheap(heap, i, 2 * i + 1, 2 * i + 2);
+    }
 }
 
 heap_t *heap_crear_arr(void *arreglo[], size_t n, cmp_func_t cmp){
@@ -32,6 +50,7 @@ heap_t *heap_crear_arr(void *arreglo[], size_t n, cmp_func_t cmp){
         return NULL;
     }
     heap->comparar = cmp;
+    heapify(heap);
     return heap;
 }
 
@@ -50,9 +69,12 @@ bool heap_esta_vacio(const heap_t *heap){
 
 /* Se guarda al final del array se hace upheap */
 bool heap_encolar(heap_t *heap, void *elem){
-    vector_guardar(heap->arreglo, elem);
-    size_t pos_hijo = vector_cantidad(heap->arreglo);
+    if(!vector_guardar(heap->arreglo, elem)){
+        return false;
+    }
+    size_t pos_hijo = vector_cantidad(heap->arreglo) - 1;
     upheap(heap, (pos_hijo - 1) / 2, pos_hijo);
+    return true;
 }
 
 void *heap_ver_max(const heap_t *heap){
@@ -63,23 +85,25 @@ void *heap_ver_max(const heap_t *heap){
 
 /* Lo primero que hace es swappear con el ultimo elemento ya que el vector elimina el ultimo, se hace downheap de la nueva raiz despues*/
 void *heap_desencolar(heap_t *heap){
-    vector_swap(heap,0, vector_cantidad(heap->arreglo));
+    if(heap_esta_vacio(heap)){
+        return NULL;
+    }
+    vector_swap(heap->arreglo ,0 , vector_cantidad(heap->arreglo));
     void* dato = vector_eliminar(heap->arreglo);
-    downheap(heap, 0, 1, 2);
+    downheap(heap, TOPE, TOPE_HIJO_IZQ, TOPE_HIJO_DER);
     return dato;
 }
-
 
 void upheap(heap_t* heap, size_t padre, size_t hijo){
     if(hijo == 0){
         return;
     }
-    if(comparar(vector_obtener(heap->arreglo, padre), vector_obtener(heap->arreglo, hijo)) >= 0){
+    if(heap->comparar(vector_obtener(heap->arreglo, padre), vector_obtener(heap->arreglo, hijo)) >= 0){
         return;
     }
     vector_swap(heap->arreglo, padre, hijo);
     size_t nuevo_padre = (hijo - 1) / 2;
-    upheap(heap->arreglo, nuevo_padre, padre);
+    upheap(heap, nuevo_padre, padre);
 }
 
 void downheap(heap_t* heap, size_t padre, size_t hijo_izq, size_t hijo_der){
@@ -89,11 +113,22 @@ void downheap(heap_t* heap, size_t padre, size_t hijo_izq, size_t hijo_der){
     //Si el hijo derecho no existe en el arreglo toma el valor del hijo izquierdo (Probablemente ahorre casos borde esto)
     hijo_der = hijo_der >= vector_cantidad(heap->arreglo) ? hijo_izq : hijo_der; 
     size_t maximo = vector_obtener(heap->arreglo, hijo_izq) > vector_obtener(heap->arreglo, hijo_der) ? hijo_izq : hijo_der;
-    if(comparar(vector_obtener(heap->arreglo, padre), vector_obtener(heap->arreglo, maximo) > 0)){
+    if(heap->comparar(vector_obtener(heap->arreglo, padre), vector_obtener(heap->arreglo, maximo)) > 0){
         return;
     }
     vector_swap(heap->arreglo, padre, maximo);
     size_t nuevo_hijo_izq = maximo * 2 + 1;
     size_t nuevo_hijo_der = maximo * 2 + 2;
     downheap(heap, maximo, nuevo_hijo_izq, nuevo_hijo_der);
+}
+
+void heap_sort(void *elementos[], size_t cant, cmp_func_t cmp){
+    heap_t* heap = heap_crear_arr(elementos, cant, cmp);
+    size_t ultimo_relativo = cant - 1;
+    while(ultimo_relativo > 0){
+        vector_swap(heap->arreglo, 0, ultimo_relativo);
+        elementos[ultimo_relativo] = vector_eliminar(heap->arreglo);
+        ultimo_relativo--;
+        downheap(heap, TOPE, TOPE_HIJO_IZQ, TOPE_HIJO_DER);
+    }
 }

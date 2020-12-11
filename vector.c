@@ -12,12 +12,13 @@ struct vector {
 };
 
 vector_t* vector_crear_vacio(){
-    vector_t* vector = malloc(sizeof(vector));
+    vector_t* vector = malloc(sizeof(vector_t));
     if(!vector){
         return NULL;
     }
     vector->datos = malloc(sizeof(void*) * CAPACIDAD_MINIMA);
     if(!vector->datos){
+        free(vector);
         return NULL;
     }
     vector->cantidad = 0;
@@ -41,7 +42,7 @@ vector_t *vector_crear(void** datos, size_t cantidad) {
     vector->cantidad = cantidad;
     vector->capacidad = cantidad > CAPACIDAD_MINIMA ? cantidad : CAPACIDAD_MINIMA;
 
-    for(int i = 0; i < cantidad > CAPACIDAD_MINIMA ? cantidad : CAPACIDAD_MINIMA; i++){
+    for(int i = 0; i < ((cantidad > CAPACIDAD_MINIMA) ? cantidad : CAPACIDAD_MINIMA); i++){
         vector->datos[i] = cantidad > CAPACIDAD_MINIMA ? datos[i] : NULL;
     }
     return vector;
@@ -100,4 +101,3 @@ void vector_swap(vector_t* vector, size_t index1, size_t index2){
 size_t vector_cantidad(vector_t *vector){
     return vector->cantidad;
 }
-
