@@ -72,7 +72,7 @@ bool heap_encolar(heap_t *heap, void *elem){
     if(!vector_guardar(heap->arreglo, elem)){
         return false;
     }
-    size_t pos_hijo = vector_cantidad(heap->arreglo);
+    size_t pos_hijo = vector_cantidad(heap->arreglo) - 1;
     upheap(heap, (pos_hijo - 1) / 2, pos_hijo);
     return true;
 }
