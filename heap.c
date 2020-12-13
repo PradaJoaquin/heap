@@ -34,7 +34,7 @@ heap_t *heap_crear(cmp_func_t cmp){
 }
 
 void heapify(heap_t* heap){
-    size_t mitad = vector_cantidad(heap->arreglo) / 2;
+    int mitad = (int)vector_cantidad(heap->arreglo) / 2;
     for(int i = mitad; i > -1; i--){
         downheap(heap, i, 2 * i + 1, 2 * i + 2);
     }
