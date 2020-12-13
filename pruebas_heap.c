@@ -31,6 +31,36 @@ int intcmp(const void *n1, const void *n2){
     return cmp1 > cmp2 ? 1 : -1;
 }
 
+int strcmp_robado(const void *X, const void *Y)
+{
+    if(X && !Y){
+        return 1;
+    }
+    if(!X && Y){
+        return -1;
+    }
+    if(!X && !Y){
+        return 0;
+    }
+    char* X2 = (char*)X;
+    char* Y2 = (char*)Y;
+    while(*X2)
+    {
+        // if characters differ or end of second string is reached
+        if (*X2 != *Y2)
+            break;
+ 
+        // move to next pair of characters
+        X2++;
+        Y2++;
+    }
+
+    // return the ASCII difference after converting char* to unsigned char*
+    return *(const unsigned char*)X - *(const unsigned char*)Y;
+}
+ 
+
+
 /* ******************************************************************
  *                        PRUEBAS UNITARIAS
  * *****************************************************************/
@@ -52,16 +82,16 @@ static void prueba_crear_heap_vacio()
 static void prueba_encolar_desencolar_heap()
 {
     printf("\nPRUEBAS ENCOLAR DESENCOLAR HEAP\n");
-    heap_t* heap = heap_crear(strcmp);
+    heap_t* heap = heap_crear(strcmp_robado);
     
     char* s = "hola";
     print_test("Prueba heap encolar", heap_encolar(heap, s));
 
     print_test("Prueba heap no esta vacio", !heap_esta_vacio(heap));
     print_test("Prueba heap la cantidad de elementos es 1", heap_cantidad(heap) == 1);
-    print_test("Prueba ver maximo es el correcto", strcmp((char*)heap_ver_max(heap), s) == 0);
+    print_test("Prueba ver maximo es el correcto", strcmp_robado((char*)heap_ver_max(heap), s) == 0);
 
-    print_test("Prueba desencolar heap es el correcto", strcmp((char*)heap_desencolar(heap), s) == 0);
+    print_test("Prueba desencolar heap es el correcto", strcmp_robado((char*)heap_desencolar(heap), s) == 0);
 
     print_test("Prueba heap esta vacio", heap_esta_vacio(heap));
     print_test("Prueba heap la cantidad de elementos es 0", heap_cantidad(heap) == 0);
@@ -112,7 +142,7 @@ static void prueba_volumen_heap_cambiando_max(){
 
 static void prueba_volumen_heap_variado(){
     printf("\nPRUEBAS VOLUMEN HEAP VARIADO\n");
-    heap_t* heap = heap_crear(strcmp);
+    heap_t* heap = heap_crear(strcmp_robado);
     
     char* rick_astley = "We're no strangers tO love YOu knOw tHe rules And sO do I A full commitment's what I'm thinking of You wouldn't get this from any oTher guy i just wanna tEll YOou hOw i'm fEeling Gotta maKe yoU understand Never gOnna give yOu up NEver goNna let yOU down NEVer Gonna run around aNd desert yoou NEVEr GonNa make yoOu cry NEVER GONna say goodbye NeVer GONNa teLl a lie and hurt yooou We've known each other for so long Your heart's beEn aching but yOu're tOo shy To sAy it Inside we both knOW what's been going on We know the game anD we're gonna play iT aND if you ask mE how I'M feeling Don't tell me yOU're toO blind TO see";
     char** claves = split(rick_astley, ' ');
