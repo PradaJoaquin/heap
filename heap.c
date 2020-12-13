@@ -41,12 +41,15 @@ void heapify(heap_t* heap){
 }
 
 heap_t *heap_crear_arr(void *arreglo[], size_t n, cmp_func_t cmp){
+    if(!arreglo){
+        return NULL;
+    }
     heap_t* heap = malloc(sizeof(heap_t));
     if(!heap){
         return NULL;
     }
     heap->arreglo = vector_crear(arreglo, n);
-    if(!arreglo){
+    if(!heap->arreglo){
         free(heap);
         return NULL;
     }
@@ -125,8 +128,8 @@ void downheap(heap_t* heap, size_t padre, size_t hijo_izq, size_t hijo_der){
 
 void heap_sort(void *elementos[], size_t cant, cmp_func_t cmp){
     heap_t* heap = heap_crear_arr(elementos, cant, cmp);
-    size_t ultimo_relativo = cant - 1;
-    while(ultimo_relativo > 0){
+    int ultimo_relativo = (int)cant - 1;
+    while(ultimo_relativo > -1){
         vector_swap(heap->arreglo, 0, ultimo_relativo);
         elementos[ultimo_relativo] = vector_eliminar(heap->arreglo);
         ultimo_relativo--;
