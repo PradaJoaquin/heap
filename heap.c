@@ -34,8 +34,8 @@ heap_t *heap_crear(cmp_func_t cmp){
 }
 
 void heapify(heap_t* heap){
-    size_t mitad = vector_cantidad(heap->arreglo);
-    for(size_t i = mitad; mitad > 0; mitad--){
+    size_t mitad = vector_cantidad(heap->arreglo) / 2;
+    for(int i = mitad; i > -1; i--){
         downheap(heap, i, 2 * i + 1, 2 * i + 2);
     }
 }
@@ -113,7 +113,7 @@ void downheap(heap_t* heap, size_t padre, size_t hijo_izq, size_t hijo_der){
     }
     //Si el hijo derecho no existe en el arreglo toma el valor del hijo izquierdo (Probablemente ahorre casos borde esto)
     hijo_der = hijo_der >= vector_cantidad(heap->arreglo) ? hijo_izq : hijo_der; 
-    size_t maximo = vector_obtener(heap->arreglo, hijo_izq) > vector_obtener(heap->arreglo, hijo_der) ? hijo_izq : hijo_der;
+    size_t maximo = heap->comparar(vector_obtener(heap->arreglo, hijo_izq), vector_obtener(heap->arreglo, hijo_der)) >= 0 ? hijo_izq : hijo_der;
     if(heap->comparar(vector_obtener(heap->arreglo, padre), vector_obtener(heap->arreglo, maximo)) > 0){
         return;
     }
@@ -132,4 +132,5 @@ void heap_sort(void *elementos[], size_t cant, cmp_func_t cmp){
         ultimo_relativo--;
         downheap(heap, TOPE, TOPE_HIJO_IZQ, TOPE_HIJO_DER);
     }
+    heap_destruir(heap, NULL);
 }

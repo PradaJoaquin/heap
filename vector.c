@@ -31,19 +31,20 @@ vector_t* vector_crear_vacio(){
 }
 
 vector_t *vector_crear(void** datos, size_t cantidad) {
-    vector_t* vector = malloc(sizeof(vector));
+    vector_t* vector = malloc(sizeof(vector_t));
     if(!vector){
         return NULL;
     }
-    vector->datos = malloc(sizeof(void*) * cantidad > CAPACIDAD_MINIMA ? cantidad : CAPACIDAD_MINIMA);
+    vector->datos = calloc(sizeof(void*), (cantidad > CAPACIDAD_MINIMA ? cantidad : CAPACIDAD_MINIMA));
     if(!vector->datos){
+        free(vector);
         return NULL;
     }
     vector->cantidad = cantidad;
     vector->capacidad = cantidad > CAPACIDAD_MINIMA ? cantidad : CAPACIDAD_MINIMA;
 
-    for(int i = 0; i < ((cantidad > CAPACIDAD_MINIMA) ? cantidad : CAPACIDAD_MINIMA); i++){
-        vector->datos[i] = cantidad > CAPACIDAD_MINIMA ? datos[i] : NULL;
+    for(int i = 0; i < cantidad; i++){
+        vector->datos[i] = datos[i];
     }
     return vector;
 }

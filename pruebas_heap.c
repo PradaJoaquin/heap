@@ -142,6 +142,33 @@ static void prueba_volumen_heap_variado(){
     heap_destruir(heap, NULL);
 }
 
+static void prueba_heapsort(){
+    printf("\nPRUEBAS HEAPSORT\n");
+    
+    int n[] = {1, 4, 2, 6, 4, 3};
+    int** n2 = malloc(sizeof(int*) * 6);
+    size_t largo = 6;
+    n2[0] = &n[0];
+    n2[1] = &n[1];
+    n2[2] = &n[2];
+    n2[3] = &n[3];
+    n2[4] = &n[4];
+    n2[5] = &n[5];
+
+    for(int i = 0; i < largo; i++){
+        printf("%d -> ", *n2[i]);
+    }
+    printf("\n");
+
+    heap_sort((void*)n2, largo, intcmp);
+
+    for(int i = 0; i < largo; i++){
+        printf("%d -> ", *n2[i]);
+    }
+    printf("\n");
+    free(n2);
+}
+
 /* ******************************************************************
  *                        FUNCIÓN PRINCIPAL
  * *****************************************************************/
@@ -154,6 +181,7 @@ void pruebas_heap_estudiante()
     prueba_encolar_desencolar_heap();
     prueba_volumen_heap_cambiando_max();
     prueba_volumen_heap_variado();
+    prueba_heapsort();
     
 }
 
