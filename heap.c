@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "vector.h"
 #include "heap.h"
 #define SIZE_MINIMO 8
@@ -88,7 +89,7 @@ void *heap_desencolar(heap_t *heap){
     if(heap_esta_vacio(heap)){
         return NULL;
     }
-    vector_swap(heap->arreglo ,0 , vector_cantidad(heap->arreglo));
+    vector_swap(heap->arreglo ,0 , vector_cantidad(heap->arreglo) - 1);
     void* dato = vector_eliminar(heap->arreglo);
     downheap(heap, TOPE, TOPE_HIJO_IZQ, TOPE_HIJO_DER);
     return dato;
@@ -102,7 +103,7 @@ void upheap(heap_t* heap, size_t padre, size_t hijo){
         return;
     }
     vector_swap(heap->arreglo, padre, hijo);
-    size_t nuevo_padre = (hijo - 1) / 2;
+    size_t nuevo_padre = (padre - 1) / 2;
     upheap(heap, nuevo_padre, padre);
 }
 
