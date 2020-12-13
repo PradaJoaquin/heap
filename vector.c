@@ -82,12 +82,12 @@ bool vector_guardar(vector_t *vector, void*  valor){
 }
 
 void* vector_eliminar(vector_t* vector){
-    if(vector->cantidad <= vector->capacidad / (FACTOR_REDIMENSION * 2)){
+    if(vector->cantidad <= vector->capacidad / (FACTOR_REDIMENSION * 2) && vector->cantidad <= CAPACIDAD_MINIMA){
         vector_redimensionar(vector, vector->capacidad / FACTOR_REDIMENSION);
     }
-    vector->cantidad--;
     void* dato = vector->datos[vector->cantidad - 1];
     vector->datos[vector->cantidad - 1] = NULL;
+    vector->cantidad--;
     return dato;
 
 }

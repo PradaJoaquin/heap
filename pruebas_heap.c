@@ -51,7 +51,7 @@ static void prueba_crear_heap_vacio()
 
 static void prueba_encolar_desencolar_heap()
 {
-    printf("\nPRUEBAS ENCOLAR HEAP\n");
+    printf("\nPRUEBAS ENCOLAR DESENCOLAR HEAP\n");
     heap_t* heap = heap_crear(strcmp);
     
     char* s = "hola";
@@ -59,9 +59,9 @@ static void prueba_encolar_desencolar_heap()
 
     print_test("Prueba heap no esta vacio", !heap_esta_vacio(heap));
     print_test("Prueba heap la cantidad de elementos es 1", heap_cantidad(heap) == 1);
-    print_test("Prueba ver maximo es el correcto", (char*)heap_ver_max(heap) == s);
+    print_test("Prueba ver maximo es el correcto", strcmp((char*)heap_ver_max(heap), s) == 0);
 
-    print_test("Prueba desencolar heap es el correcto", (char*)heap_desencolar(heap) == s);
+    print_test("Prueba desencolar heap es el correcto", strcmp((char*)heap_desencolar(heap), s) == 0);
 
     print_test("Prueba heap esta vacio", heap_esta_vacio(heap));
     print_test("Prueba heap la cantidad de elementos es 0", heap_cantidad(heap) == 0);
@@ -96,7 +96,9 @@ static void prueba_volumen_heap_cambiando_max(){
     for (size_t i = 0; i < largo; i++) {
         int* max = heap_ver_max(heap);
         ok = (int*)heap_desencolar(heap) == max;
-        ok2 = *(int*)heap_ver_max(heap) == *max - 1;
+        if(!heap_cantidad(heap) == 0){
+            ok2 = *(int*)heap_ver_max(heap) == *max - 1;
+        }
         if (!ok || !ok2) break;
     }
 
