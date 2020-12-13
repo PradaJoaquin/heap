@@ -58,8 +58,6 @@ int strcmp_prestado(const void *X, const void *Y)
     // return the ASCII difference after converting char* to unsigned char*
     return *(const unsigned char*)X - *(const unsigned char*)Y;
 }
- 
-
 
 /* ******************************************************************
  *                        PRUEBAS UNITARIAS
@@ -99,6 +97,50 @@ static void prueba_encolar_desencolar_heap()
     print_test("Prueba desencolar heap es NULL", heap_desencolar(heap) == NULL);
 
     heap_destruir(heap, NULL);
+}
+
+static void prueba_crear_heap_arreglo(){
+    printf("\nPRUEBAS CREAR HEAP ARREGLO\n");
+    int n[] = {0, 4, 1, 2, 5, 3};
+    int** n2 = malloc(sizeof(int*) * 6);
+    size_t largo = 6;
+    for(int i = 0; i < largo; i++){
+        n2[i] = &n[i];
+    }
+    heap_t* heap = heap_crear_arr((void*)n2, largo, intcmp);
+
+    print_test("Prueba heap crear heap arreglo", heap);
+    print_test("Prueba heap no esta vacio", !heap_esta_vacio(heap));
+    print_test("Prueba heap la cantidad de elementos es la correcta", heap_cantidad(heap) == largo);
+    print_test("Prueba ver maximo es el correcto", *(int*)heap_ver_max(heap) == 5);
+    print_test("Prueba desencolar en heap vacio es el correcto", *(int*)heap_desencolar(heap) == 5);
+
+    heap_destruir(heap, NULL);
+    free(n2);
+}
+
+static void prueba_destruir_datos_heap(){
+    printf("\nPRUEBAS DESTRUIR DATOS HEAP\n");
+    int n[] = {0, 4, 1, 2, 5, 3};
+    int** n2 = malloc(sizeof(int*) * 6);
+    size_t largo = 6;
+    for(int i = 0; i < largo; i++){
+        int* temp = malloc(sizeof(int));
+        *temp = n[i];
+        n2[i] = temp;
+    }
+    heap_t* heap = heap_crear_arr((void*)n2, largo, intcmp);
+
+    print_test("Prueba heap crear heap arreglo con datos a liberar", heap);
+    print_test("Prueba heap no esta vacio", !heap_esta_vacio(heap));
+    print_test("Prueba heap la cantidad de elementos es la correcta", heap_cantidad(heap) == largo);
+    print_test("Prueba ver maximo es el correcto", *(int*)heap_ver_max(heap) == 5);
+    int* desencolado = heap_desencolar(heap);
+
+    free(desencolado);
+    heap_destruir(heap, free);
+    free(n2);
+    print_test("Se destruyo el heap con todos sus datos correctamente", true);
 }
 
 static void prueba_volumen_heap_cambiando_max(){
@@ -204,10 +246,11 @@ void pruebas_heap_estudiante()
     /* Ejecuta todas las pruebas unitarias. */
     prueba_crear_heap_vacio();
     prueba_encolar_desencolar_heap();
+    prueba_crear_heap_arreglo();
+    prueba_destruir_datos_heap();
     prueba_volumen_heap_cambiando_max();
     prueba_volumen_heap_variado();
     prueba_heapsort();
-    
 }
 
 #ifndef CORRECTOR  // Para que no dé conflicto con el main() del corrector.
