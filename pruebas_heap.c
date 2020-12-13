@@ -145,27 +145,22 @@ static void prueba_volumen_heap_variado(){
 static void prueba_heapsort(){
     printf("\nPRUEBAS HEAPSORT\n");
     
-    int n[] = {1, 4, 2, 6, 4, 3};
+    int n[] = {0, 4, 1, 2, 5, 3};
     int** n2 = malloc(sizeof(int*) * 6);
     size_t largo = 6;
-    n2[0] = &n[0];
-    n2[1] = &n[1];
-    n2[2] = &n[2];
-    n2[3] = &n[3];
-    n2[4] = &n[4];
-    n2[5] = &n[5];
-
     for(int i = 0; i < largo; i++){
-        printf("%d -> ", *n2[i]);
+        n2[i] = &n[i];
     }
-    printf("\n");
 
     heap_sort((void*)n2, largo, intcmp);
-
+    bool ok = true;
     for(int i = 0; i < largo; i++){
-        printf("%d -> ", *n2[i]);
+        ok = *n2[i] == i;
+        if(!ok){
+            break;
+        }
     }
-    printf("\n");
+    print_test("Se ordenaron correctamente todos los elementos", ok);
     free(n2);
 }
 
