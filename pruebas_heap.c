@@ -31,7 +31,7 @@ int intcmp(const void *n1, const void *n2){
     return cmp1 > cmp2 ? 1 : -1;
 }
 
-int strcmp_robado(const void *X, const void *Y)
+int strcmp_prestado(const void *X, const void *Y)
 {
     if(X && !Y){
         return 1;
